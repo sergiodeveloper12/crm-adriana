@@ -34,6 +34,7 @@ app.include_router(clientes_router, prefix="/api")
 BASE_DIR = os.path.dirname(
     os.path.dirname(
         os.path.dirname(__file__)
+           os.path.abspath(__file__)
     )
 )
 
