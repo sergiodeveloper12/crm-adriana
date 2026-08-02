@@ -1,103 +1,46 @@
-from sqlalchemy import text
-from .database import engine
-from passlib.context import CryptContext
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from .init_db import criar_tabelas
+from .auth import router as auth_router
+from .clientes import router as clientes_router
 
 
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
+app = FastAPI(
+    title="CRM Adriana Froes API",
+    version="1.0.0"
 )
 
 
-def criar_tabelas():
-
-    with engine.connect() as conn:
-
-        # CLIENTES
-        conn.execute(text("""
-            CREATE TABLE IF NOT EXISTS clientes (
-                id SERIAL PRIMARY KEY,
-                nome VARCHAR(100) NOT NULL,
-                email VARCHAR(150),
-                telefone VARCHAR(30),
-                produto VARCHAR(100),
-                mensagem TEXT,
-                status VARCHAR(50) DEFAULT 'Novo',
-                data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """))
+# cria tabelas e usuários ao iniciar
+criar_tabelas()
 
 
-        # USUARIOS
-        conn.execute(text("""
-            CREATE TABLE IF NOT EXISTS usuarios (
-                id SERIAL PRIMARY KEY,
-                usuario VARCHAR(50) UNIQUE NOT NULL,
-                senha_hash VARCHAR(255) NOT NULL,
-                perfil VARCHAR(50) DEFAULT 'admin'
-            );
-        """))
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-        usuarios = [
-            {
-                "usuario": "admin",
-                "senha": "123456",
-                "perfil": "admin"
-            },
-            {
-                "usuario": "adriana",
-                "senha": "Adriana@2026",
-                "perfil": "admin"
-            }
-        ]
+app.include_router(
+    auth_router,
+    prefix="/api"
+)
 
 
-        for user in usuarios:
-
-            existe = conn.execute(
-                text("""
-                    SELECT id
-                    FROM usuarios
-                    WHERE usuario = :usuario
-                """),
-                {
-                    "usuario": user["usuario"]
-                }
-            ).fetchone()
+app.include_router(
+    clientes_router,
+    prefix="/api"
+)
 
 
-            if not existe:
-
-                senha_hash = pwd_context.hash(
-                    user["senha"]
-                )
-
-                conn.execute(
-                    text("""
-                        INSERT INTO usuarios
-                        (
-                            usuario,
-                            senha_hash,
-                            perfil
-                        )
-                        VALUES
-                        (
-                            :usuario,
-                            :senha_hash,
-                            :perfil
-                        )
-                    """),
-                    {
-                        "usuario": user["usuario"],
-                        "senha_hash": senha_hash,
-                        "perfil": user["perfil"]
-                    }
-                )
-
-
-        conn.commit()
-
-
-if __name__ == "__main__":
-    criar_tabelas()
+@app.get("/")
+def home():
+    return {
+        "status": "CRM Adriana Froes API online"
+    }
