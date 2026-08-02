@@ -1,57 +1,103 @@
-from pathlib import Path
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-
-from .init_db import criar_tabelas
-from .auth import router as auth_router
-from .clientes import router as clientes_router
+from sqlalchemy import text
+from .database import engine
+from passlib.context import CryptContext
 
 
-app = FastAPI(
-    title="CRM Adriana Froes API",
-    version="1.0.0"
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto"
 )
 
 
-# cria tabelas automaticamente no PostgreSQL
-criar_tabelas()
+def criar_tabelas():
+
+    with engine.connect() as conn:
+
+        # CLIENTES
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS clientes (
+                id SERIAL PRIMARY KEY,
+                nome VARCHAR(100) NOT NULL,
+                email VARCHAR(150),
+                telefone VARCHAR(30),
+                produto VARCHAR(100),
+                mensagem TEXT,
+                status VARCHAR(50) DEFAULT 'Novo',
+                data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """))
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+        # USUARIOS
+        conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id SERIAL PRIMARY KEY,
+                usuario VARCHAR(50) UNIQUE NOT NULL,
+                senha_hash VARCHAR(255) NOT NULL,
+                perfil VARCHAR(50) DEFAULT 'admin'
+            );
+        """))
 
 
-# Rotas da API
-app.include_router(
-    auth_router,
-    prefix="/api"
-)
+        usuarios = [
+            {
+                "usuario": "admin",
+                "senha": "123456",
+                "perfil": "admin"
+            },
+            {
+                "usuario": "adriana",
+                "senha": "Adriana@2026",
+                "perfil": "admin"
+            }
+        ]
 
 
-app.include_router(
-    clientes_router,
-    prefix="/api"
-)
+        for user in usuarios:
+
+            existe = conn.execute(
+                text("""
+                    SELECT id
+                    FROM usuarios
+                    WHERE usuario = :usuario
+                """),
+                {
+                    "usuario": user["usuario"]
+                }
+            ).fetchone()
 
 
-# Caminho da pasta frontend
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-FRONTEND_DIR = BASE_DIR / "frontend"
+            if not existe:
+
+                senha_hash = pwd_context.hash(
+                    user["senha"]
+                )
+
+                conn.execute(
+                    text("""
+                        INSERT INTO usuarios
+                        (
+                            usuario,
+                            senha_hash,
+                            perfil
+                        )
+                        VALUES
+                        (
+                            :usuario,
+                            :senha_hash,
+                            :perfil
+                        )
+                    """),
+                    {
+                        "usuario": user["usuario"],
+                        "senha_hash": senha_hash,
+                        "perfil": user["perfil"]
+                    }
+                )
 
 
-# Publica HTML, JS e CSS
-app.mount(
-    "/",
-    StaticFiles(
-        directory=FRONTEND_DIR,
-        html=True
-    ),
-    name="frontend"
-)
+        conn.commit()
+
+
+if __name__ == "__main__":
+    criar_tabelas()
