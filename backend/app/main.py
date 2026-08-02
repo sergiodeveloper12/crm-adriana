@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from .init_db import criar_tabelas
 from .auth import router as auth_router
@@ -29,15 +31,35 @@ app.include_router(
     prefix="/api"
 )
 
-
 app.include_router(
     clientes_router,
     prefix="/api"
 )
 
 
+# Servir frontend
+app.mount(
+    "/static",
+    StaticFiles(directory="../frontend"),
+    name="static"
+)
+
+
 @app.get("/")
 def home():
-    return {
-        "status": "CRM Adriana Froes API online"
-    }
+    return FileResponse("../frontend/login.html")
+
+
+@app.get("/login.html")
+def login():
+    return FileResponse("../frontend/login.html")
+
+
+@app.get("/dashboard.html")
+def dashboard():
+    return FileResponse("../frontend/dashboard.html")
+
+
+@app.get("/clientes.html")
+def clientes():
+    return FileResponse("../frontend/clientes.html")
