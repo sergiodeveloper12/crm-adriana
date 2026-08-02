@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: crm-postgres
+    restart: always
+
+    environment:
+      POSTGRES_DB: crm_adriana
+      POSTGRES_USER: crm
+      POSTGRES_PASSWORD: crm123
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:
