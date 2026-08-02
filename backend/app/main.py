@@ -3,11 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+from pathlib import Path
+
 from .init_db import criar_tabelas
 from .auth import router as auth_router
 from .clientes import router as clientes_router
 
 
+# Caminho base do projeto
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+FRONTEND_DIR = BASE_DIR / "frontend"
+
+
+# Criar tabelas no banco
 criar_tabelas()
 
 
@@ -26,6 +34,7 @@ app.add_middleware(
 )
 
 
+# Rotas da API
 app.include_router(
     auth_router,
     prefix="/api"
@@ -37,29 +46,37 @@ app.include_router(
 )
 
 
-# Servir frontend
+# Arquivos do frontend
 app.mount(
     "/static",
-    StaticFiles(directory="../frontend"),
+    StaticFiles(directory=FRONTEND_DIR),
     name="static"
 )
 
 
 @app.get("/")
 def home():
-    return FileResponse("../frontend/login.html")
+    return FileResponse(
+        FRONTEND_DIR / "login.html"
+    )
 
 
 @app.get("/login.html")
 def login():
-    return FileResponse("../frontend/login.html")
+    return FileResponse(
+        FRONTEND_DIR / "login.html"
+    )
 
 
 @app.get("/dashboard.html")
 def dashboard():
-    return FileResponse("../frontend/dashboard.html")
+    return FileResponse(
+        FRONTEND_DIR / "dashboard.html"
+    )
 
 
 @app.get("/clientes.html")
 def clientes():
-    return FileResponse("../frontend/clientes.html")
+    return FileResponse(
+        FRONTEND_DIR / "clientes.html"
+    )
