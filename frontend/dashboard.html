@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Adriana Froes - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="topo">
+    <h1>CRM Adriana Froes</h1>
+    <button onclick="sair()">Sair</button>
+</header>
+
+
+<div class="container">
+
+    <h2 id="bemvindo">
+        Bem-vinda
+    </h2>
+
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Clientes</h3>
+            <p>Visualizar clientes cadastrados</p>
+            <button onclick="abrirClientes()">
+                Acessar
+            </button>
+        </div>
+
+
+        <div class="card">
+            <h3>Agenda</h3>
+            <p>Organizar visitas e compromissos</p>
+            <button onclick="abrirAgenda()">
+                Acessar
+            </button>
+        </div>
+
+
+        <div class="card">
+            <h3>Pedidos</h3>
+            <p>Pedidos recebidos da landing page</p>
+            <button>
+                Visualizar
+            </button>
+        </div>
+
+    </div>
+
+
+    <section class="pedidos">
+
+        <h2>
+            Últimos pedidos
+        </h2>
+
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Produto</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+                    <td>001</td>
+                    <td>Cliente exemplo</td>
+                    <td>Sofá planejado</td>
+                    <td>Novo</td>
+                </tr>
+
+
+                <tr>
+                    <td>002</td>
+                    <td>Maria Silva</td>
+                    <td>Armário</td>
+                    <td>Agendar visita</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+
+</div>
+
+
+<script src="script.js"></script>
+
+<script>
+
+const usuario = localStorage.getItem("usuario");
+
+if(usuario){
+
+    document.getElementById("bemvindo").innerHTML =
+    "Olá, " + usuario + " 👋";
+
+}else{
+
+    window.location.href="login.html";
+
+}
+
+
+function abrirClientes(){
+
+    window.location.href="clientes.html";
+
+}
+
+
+function abrirAgenda(){
+
+    window.location.href="agenda.html";
+
+}
+
+
+function sair(){
+
+    localStorage.clear();
+
+    window.location.href="login.html";
+
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,230 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    background: #f5f1ed;
+    color: #333;
+}
+
+
+/* LOGIN */
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.login-box {
+
+    background: white;
+    width: 380px;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    text-align: center;
+
+}
+
+
+.login-box h1 {
+
+    color: #8b5e3c;
+    font-size: 32px;
+    margin-bottom: 8px;
+
+}
+
+
+.login-box p {
+
+    color: #777;
+    margin-bottom: 25px;
+
+}
+
+
+input {
+
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+
+    border:1px solid #ddd;
+    border-radius:10px;
+
+    font-size:15px;
+
+}
+
+
+input:focus {
+
+    outline:none;
+    border-color:#8b5e3c;
+
+}
+
+
+button {
+
+    width:100%;
+    padding:14px;
+
+    background:#8b5e3c;
+    color:white;
+
+    border:none;
+    border-radius:10px;
+
+    font-size:16px;
+    cursor:pointer;
+
+}
+
+
+button:hover {
+
+    background:#6f472d;
+
+}
+
+
+
+/* DASHBOARD E CLIENTES */
+
+.topo {
+
+    background:#8b5e3c;
+    color:white;
+
+    padding:20px 40px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+}
+
+
+.topo button {
+
+    width:auto;
+    background:white;
+    color:#8b5e3c;
+
+    padding:10px 20px;
+
+}
+
+
+.container {
+
+    width:90%;
+    max-width:1200px;
+
+    margin:40px auto;
+
+}
+
+
+.cards {
+
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+
+}
+
+
+.card {
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    flex:1;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+
+}
+
+
+.card p {
+
+    font-size:32px;
+    color:#8b5e3c;
+
+}
+
+
+
+/* TABELA */
+
+table {
+
+    width:100%;
+
+    background:white;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    border-collapse:collapse;
+
+}
+
+
+th {
+
+    background:#8b5e3c;
+
+    color:white;
+
+    padding:15px;
+
+}
+
+
+td {
+
+    padding:15px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+tr:hover {
+
+    background:#faf6f2;
+
+}
+
+
+
+@media(max-width:600px){
+
+    .login-box{
+
+        width:90%;
+
+    }
+
+
+    table{
+
+        font-size:12px;
+
+    }
+
+}

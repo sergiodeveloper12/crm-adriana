@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Adriana Froes - Clientes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+<header class="topo">
+
+    <h1>
+        Clientes
+    </h1>
+
+    <button onclick="voltarDashboard()">
+        Dashboard
+    </button>
+
+</header>
+
+
+<div class="container">
+
+    <h2>
+        Clientes e Solicitações
+    </h2>
+
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Produto</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+
+        <tbody id="listaClientes">
+
+        </tbody>
+
+
+    </table>
+
+
+</div>
+
+
+
+<script>
+
+
+function voltarDashboard(){
+
+    window.location.href="dashboard.html";
+
+}
+
+
+
+async function carregarClientes(){
+
+    try {
+
+
+        const resposta = await fetch(
+            "http://localhost:8000/api/clientes"
+        );
+
+
+        const clientes = await resposta.json();
+
+
+        const tabela = document.getElementById(
+            "listaClientes"
+        );
+
+
+        tabela.innerHTML = "";
+
+
+        clientes.forEach(cliente => {
+
+
+            tabela.innerHTML += `
+
+                <tr>
+
+                    <td>${cliente.id}</td>
+
+                    <td>${cliente.nome}</td>
+
+                    <td>${cliente.email}</td>
+
+                    <td>${cliente.telefone}</td>
+
+                    <td>${cliente.produto}</td>
+
+                    <td>${cliente.status}</td>
+
+                </tr>
+
+            `;
+
+
+        });
+
+
+    } catch (erro) {
+
+
+        console.error(
+            "Erro ao carregar clientes:",
+            erro
+        );
+
+
+    }
+
+}
+
+
+
+carregarClientes();
+
+
+</script>
+
+
+</body>
+
+</html>
